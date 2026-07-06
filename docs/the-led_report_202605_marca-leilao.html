@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proteção de Marca · THE LED — Mai 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow:  #E4D33E;
+      --orange:  #EB6C42;
+      --pink:    #E73968;
+      --purple:  #954B9D;
+      --indigo:  #5756A0;
+      --green:   #3ECF8E;
+      --red:     #E73968;
+
+      --bg:       #0D0D0F;
+      --surface:  #141418;
+      --surface2: #1C1C22;
+      --surface3: #232329;
+      --border:   rgba(255,255,255,0.07);
+      --text:     #F0EFF8;
+      --muted:    #8A8998;
+      --radius:   18px;
+      --radius-sm:10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity:.5;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 32px; height:60px;
+      background:rgba(13,13,15,.88); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo { font-family:'Open Sans',sans-serif; font-size:14px; font-weight:800; letter-spacing:1px; color:var(--text); }
+    .nav-logo span { font-weight:300; }
+    .nav-links { display:flex; gap:6px; }
+    .nav-link { padding:6px 14px; border-radius:999px; font-size:12px; font-weight:600; color:var(--muted); text-decoration:none; transition:all .2s; }
+    .nav-link:hover, .nav-link.active { background:rgba(255,255,255,.07); color:var(--text); }
+
+    /* HEADER */
+    header {
+      position:relative; min-height:100vh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:120px 24px 80px; overflow:hidden;
+    }
+    header::before {
+      content:''; position:absolute; width:700px; height:700px; border-radius:50%;
+      background:radial-gradient(circle,rgba(62,207,142,.12) 0%,transparent 70%);
+      top:-200px; left:50%; transform:translateX(-50%); pointer-events:none;
+    }
+    header::after {
+      content:''; position:absolute; width:500px; height:500px; border-radius:50%;
+      background:radial-gradient(circle,rgba(87,86,160,.10) 0%,transparent 70%);
+      bottom:-100px; right:-100px; pointer-events:none;
+    }
+
+    .header-eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 18px; border-radius:999px;
+      border:1px solid rgba(62,207,142,.4); background:rgba(62,207,142,.1); color:var(--green);
+      font-family:'Open Sans',sans-serif; font-size:11px; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; margin-bottom:28px;
+      position:relative; z-index:1;
+    }
+    .header-eyebrow .dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
+
+    h1 {
+      font-family:'Open Sans',sans-serif; font-weight:800;
+      font-size:clamp(48px,9vw,84px); line-height:1.05; letter-spacing:-2px;
+      margin-bottom:24px; position:relative; z-index:1;
+    }
+    h1 .accent { color:var(--green); }
+
+    .header-sub { font-size:17px; color:var(--muted); max-width:560px; margin-bottom:48px; position:relative; z-index:1; }
+
+    .header-chips { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; position:relative; z-index:1; }
+    .chip { padding:8px 18px; border-radius:999px; font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700; border:1px solid; }
+    .chip-green  { border-color:rgba(62,207,142,.35);  color:var(--green);  background:rgba(62,207,142,.08); }
+    .chip-purple { border-color:rgba(149,75,157,.35);  color:var(--purple); background:rgba(149,75,157,.08); }
+    .chip-yellow { border-color:rgba(228,211,62,.35);  color:var(--yellow); background:rgba(228,211,62,.08); }
+    .chip-orange { border-color:rgba(235,108,66,.35);  color:var(--orange); background:rgba(235,108,66,.08); }
+    .chip-red    { border-color:rgba(231,57,104,.35);  color:var(--red);    background:rgba(231,57,104,.08); }
+
+    /* SECTIONS */
+    section { padding:100px 24px; position:relative; }
+    .container { max-width:980px; margin:0 auto; }
+
+    .section-label { display:flex; align-items:center; gap:10px; font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+    .bar { display:inline-block; width:28px; height:3px; border-radius:99px; }
+
+    h2 { font-family:'Open Sans',sans-serif; font-weight:800; font-size:clamp(28px,5vw,44px); line-height:1.1; letter-spacing:-1px; margin-bottom:14px; }
+    .section-desc { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:56px; }
+
+    /* CARD */
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:28px 32px; }
+    .divider { height:1px; background:var(--border); margin:40px 0; }
+
+    /* FADE-UP */
+    .fade-up { opacity:0; transform:translateY(28px); transition:opacity .6s ease,transform .6s ease; }
+    .fade-up.visible { opacity:1; transform:none; }
+
+    /* NOTICE */
+    .notice {
+      background:rgba(235,108,66,.06); border:1px solid rgba(235,108,66,.2);
+      border-left:3px solid var(--orange); border-radius:var(--radius);
+      padding:24px 28px; display:flex; gap:16px; align-items:flex-start;
+    }
+    .notice-icon { font-size:22px; flex-shrink:0; }
+    .notice-label { font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--orange); margin-bottom:6px; }
+    .notice-title { font-family:'Open Sans',sans-serif; font-weight:700; font-size:15px; margin-bottom:8px; }
+    .notice-body { font-size:13px; color:var(--muted); line-height:1.7; }
+
+    /* BRANDDI CARD */
+    .branddi-card {
+      background: rgba(231,57,104,.05);
+      border: 1px solid rgba(231,57,104,.2);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+    }
+
+    .branddi-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: rgba(231,57,104,.12);
+      border: 1px solid rgba(231,57,104,.3);
+      color: var(--pink);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: .5px;
+      transition: all .2s;
+    }
+    .branddi-link:hover { background:rgba(231,57,104,.2); border-color:rgba(231,57,104,.5); }
+
+    /* LEILÃO TABLE */
+    .auction-section { margin-bottom: 48px; }
+
+    .auction-period-label {
+      font-family:'Open Sans',sans-serif; font-size:11px; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;
+      display:flex; align-items:center; gap:10px;
+    }
+
+    .auction-table { width:100%; border-collapse:collapse; }
+    .auction-table th {
+      font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700;
+      letter-spacing:1px; text-transform:uppercase; color:var(--muted);
+      padding:10px 16px; text-align:left; border-bottom:1px solid var(--border);
+    }
+    .auction-table th.right, .auction-table td.right { text-align:right; }
+
+    .auction-table td { padding:12px 16px; font-size:13px; border-bottom:1px solid var(--border); vertical-align:middle; }
+    .auction-table tr:last-child td { border-bottom:none; }
+    .auction-table tr.us-row td { background:rgba(62,207,142,.05); }
+
+    .is-pill {
+      display:inline-flex; align-items:center; gap:6px;
+      font-family:'Open Sans',sans-serif; font-weight:700; font-size:13px;
+    }
+    .is-mini-bar-wrap { width:60px; height:6px; background:var(--surface3); border-radius:99px; overflow:hidden; display:inline-block; vertical-align:middle; }
+    .is-mini-bar { height:100%; border-radius:99px; }
+
+    .domain-badge {
+      font-family:'Open Sans',sans-serif; font-size:12px; font-weight:700;
+      padding:3px 10px; border-radius:999px;
+    }
+    .domain-us    { background:rgba(62,207,142,.15);  color:var(--green); }
+    .domain-comp  { background:rgba(255,255,255,.06); color:var(--muted); }
+    .domain-alert { background:rgba(235,108,66,.15);  color:var(--orange); }
+
+    .delta-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:999px; font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700; }
+    .delta-up   { background:rgba(62,207,142,.15); color:var(--green); }
+    .delta-warn { background:rgba(235,108,66,.15);  color:var(--orange); }
+
+    /* LEDWAVE ALERT */
+    .ledwave-alert {
+      background: rgba(235,108,66,.07);
+      border: 1px solid rgba(235,108,66,.25);
+      border-left: 4px solid var(--orange);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+    }
+    .ledwave-alert .al-eyebrow {
+      font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; color:var(--orange); margin-bottom:10px;
+    }
+    .ledwave-alert h3 { font-family:'Open Sans',sans-serif; font-weight:800; font-size:20px; margin-bottom:12px; }
+    .ledwave-alert p { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:12px; }
+    .ledwave-alert p:last-child { margin-bottom:0; }
+
+    .action-box {
+      margin-top:18px;
+      background:rgba(235,108,66,.1); border:1px solid rgba(235,108,66,.25);
+      border-radius:var(--radius-sm); padding:18px 22px;
+    }
+    .action-box .action-label { font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
+    .action-box p { font-size:13px; color:var(--text); margin:0; line-height:1.7; }
+
+    /* TIMELINE */
+    .timeline { display:flex; flex-direction:column; gap:0; }
+    .tl-item { display:grid; grid-template-columns:20px 1fr; gap:20px; }
+    .tl-line { display:flex; flex-direction:column; align-items:center; }
+    .tl-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+    .tl-connector { width:2px; flex:1; background:var(--border); min-height:28px; }
+    .tl-item:last-child .tl-connector { display:none; }
+    .tl-content { padding-bottom:28px; }
+    .tl-date { font-family:'Open Sans',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+    .tl-title { font-family:'Open Sans',sans-serif; font-weight:700; font-size:15px; margin-bottom:6px; }
+    .tl-body { font-size:13px; color:var(--muted); line-height:1.7; }
+
+    /* VERDICT */
+    .verdict {
+      background:linear-gradient(135deg,rgba(62,207,142,.08) 0%,rgba(87,86,160,.08) 100%);
+      border:1px solid rgba(62,207,142,.2); border-radius:var(--radius);
+      padding:36px 40px; text-align:center;
+    }
+    .verdict-icon { font-size:48px; margin-bottom:16px; }
+    .verdict-title { font-family:'Open Sans',sans-serif; font-weight:800; font-size:26px; color:var(--green); margin-bottom:12px; }
+    .verdict-body { color:var(--muted); font-size:14px; line-height:1.8; max-width:580px; margin:0 auto; }
+
+    /* ANSWER BOX */
+    .answer-box { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:28px 32px; }
+    .answer-box p { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:14px; }
+    .answer-box p:last-child { margin-bottom:0; }
+    .answer-box strong { color:var(--text); }
+
+    /* FOOTER */
+    footer { text-align:center; padding:60px 24px; border-top:1px solid var(--border); }
+    .footer-logo { font-family:'Open Sans',sans-serif; font-size:20px; font-weight:800; margin-bottom:10px; }
+    .footer-by { font-size:13px; color:var(--muted); }
+
+    /* RESPONSIVE */
+    @media (max-width:640px) {
+      nav .nav-links { display:none; }
+      .auction-table th:nth-child(n+4), .auction-table td:nth-child(n+4) { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>THE </span>LED</div>
+  <div class="nav-links">
+    <a href="#contexto"  class="nav-link">Contexto</a>
+    <a href="#leilao"    class="nav-link">Leilão</a>
+    <a href="#ledwave"   class="nav-link">LedWave</a>
+    <a href="#evolucao"  class="nav-link">Evolução</a>
+    <a href="#resposta"  class="nav-link">Conclusão</a>
+  </div>
+</nav>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="header-eyebrow">
+    <span class="dot"></span>
+    Google Ads · Proteção de Marca · Maio 2026
+  </div>
+  <h1>A marca está<br><span class="accent">protegida.</span></h1>
+  <p class="header-sub">
+    Análise do leilão de marca da THE LED no Google Ads — o que os dados mostram, quem são os concorrentes e por que não precisamos de terceiros para isso.
+  </p>
+  <div class="header-chips">
+    <span class="chip chip-green">Impression Share ↑</span>
+    <span class="chip chip-purple">Campanha Institucional</span>
+    <span class="chip chip-orange">LedWave · Concorrente</span>
+    <span class="chip chip-red">Branddi · Prospecção Alarmista</span>
+  </div>
+</header>
+
+<!-- ═══ SEÇÃO 1 — CONTEXTO + BRANDDI ═══ -->
+<section id="contexto">
+  <div class="container">
+    <div class="section-label fade-up" style="color:var(--orange)">
+      <span class="bar" style="background:var(--orange)"></span>
+      O que chegou
+    </div>
+    <h2 class="fade-up">O alerta da Branddi</h2>
+    <p class="section-desc fade-up">Entenda o que foi enviado, o que essa empresa realmente é — e por que isso não é um problema real.</p>
+
+    <div class="notice fade-up">
+      <div class="notice-icon">📩</div>
+      <div>
+        <div class="notice-label">Mensagem recebida · Branddi</div>
+        <div class="notice-title">652 anúncios, 28 anunciantes, 4 disputando diretamente a marca</div>
+        <div class="notice-body">
+          A Branddi enviou um diagnóstico informando que identificou 652 anúncios patrocinados acionados por palavras-chave relacionadas à The LED, com 28 anunciantes únicos e 4 ativos no leilão de marca. Apresentaram isso como um problema urgente que exigiria a contratação do serviço deles para ser resolvido.
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Branddi: quem são -->
+    <div class="branddi-card fade-up">
+      <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
+        <div style="flex:1;min-width:280px">
+          <div style="font-family:'Open Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:10px">⚠️ Quem é a Branddi?</div>
+          <h3 style="font-family:'Open Sans',sans-serif;font-weight:800;font-size:20px;margin-bottom:12px">Uma empresa pequena, sem relevância de mercado</h3>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:10px">
+            A Branddi é uma empresa de pequeno porte que atua com uma proposta de "proteção de marca digital". No entanto, <strong style="color:var(--text)">não possuem relevância expressiva no mercado</strong> com essa solução — e o próprio modelo de negócio deles já diz muito sobre a abordagem.
+          </p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:6px">
+            O que eles fazem é simples: <strong style="color:var(--text)">coletam dados públicos do Google Ads, montam um diagnóstico com números alarmantes e disparam para marcas como se fosse uma notificação urgente</strong> — quase como se fosse uma ação extrajudicial. O objetivo não é proteger sua marca. O objetivo é <strong style="color:var(--text)">vender o serviço deles</strong>.
+          </p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:0">
+            Concorrentes comprando palavras-chave de marca alheia no Google Ads é <strong style="color:var(--text)">completamente legal</strong> — é o funcionamento normal do leilão aberto. O que importa é uma pergunta simples: <strong style="color:var(--green)">a THE LED está ganhando esse leilão?</strong>
+          </p>
+          <a href="https://www.instagram.com/branddi.br/" target="_blank" rel="noopener" class="branddi-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Ver @branddi.br no Instagram
+          </a>
+        </div>
+        <div style="flex-shrink:0;display:flex;align-items:flex-start">
+          <div style="background:rgba(231,57,104,.08);border:1px solid rgba(231,57,104,.2);border-radius:14px;padding:20px 24px;max-width:260px">
+            <div style="font-family:'Open Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:14px">Como o esquema funciona</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(231,57,104,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red);flex-shrink:0">1</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.6">Coletam dados públicos do Google Ads de marcas relevantes</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(231,57,104,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red);flex-shrink:0">2</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.6">Montam um "diagnóstico" com números alarmantes</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(231,57,104,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red);flex-shrink:0">3</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.6">Disparam como notificação urgente para gerar medo</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(231,57,104,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red);flex-shrink:0">4</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.6">Oferecem o serviço deles como solução</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEÇÃO 2 — LEILÃO ═══ -->
+<section id="leilao" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-label fade-up" style="color:var(--green)">
+      <span class="bar" style="background:var(--green)"></span>
+      Informações do Leilão
+    </div>
+    <h2 class="fade-up">Nós dominamos. Eles mal aparecem.</h2>
+    <p class="section-desc fade-up">
+      Dados reais do Google Ads — Grupo Institucional, filtrado pelas palavras-chave de marca da THE LED. Os concorrentes mal chegam a 10% de Parcela de Impressões, enquanto estamos consistentemente acima de 60%, evoluindo para mais de 77%.
+    </p>
+
+    <!-- PERÍODO 1 -->
+    <div class="auction-section fade-up">
+      <div class="auction-period-label" style="color:var(--orange)">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--orange);display:inline-block"></span>
+        01 a 15 mai. 2026 · Antes do ajuste
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="auction-table">
+          <thead>
+            <tr>
+              <th>Domínio</th>
+              <th class="right">Parcela de Impressões</th>
+              <th class="right">Taxa de Sobreposição</th>
+              <th class="right">Posição Superior</th>
+              <th class="right">Top da Página</th>
+              <th class="right">1ª Posição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="us-row">
+              <td><span class="domain-badge domain-us">🏆 THE LED (Você)</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--green);font-family:'Open Sans',sans-serif;font-weight:800">62,47%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:62.47%;background:var(--green)"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">—</td>
+              <td class="right" style="color:var(--muted)">—</td>
+              <td class="right" style="color:var(--text)">86,22%</td>
+              <td class="right" style="color:var(--text)">78,09%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-alert">ledwave.com.br ⚠️</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--orange)">11,48%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:11.48%;background:var(--orange)"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">15,19%</td>
+              <td class="right" style="color:var(--muted)">0,00%</td>
+              <td class="right" style="color:var(--muted)">80,77%</td>
+              <td class="right" style="color:var(--muted)">0,00%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-comp">dshow.com.br</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--muted)">&lt; 10%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:9%;background:var(--muted);opacity:.5"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">8,13%</td>
+              <td class="right" style="color:var(--muted)">8,70%</td>
+              <td class="right" style="color:var(--muted)">76,92%</td>
+              <td class="right" style="color:var(--muted)">3,85%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-comp">p1led.com.br</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--muted)">&lt; 10%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:9%;background:var(--muted);opacity:.5"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">7,77%</td>
+              <td class="right" style="color:var(--muted)">4,55%</td>
+              <td class="right" style="color:var(--muted)">64,29%</td>
+              <td class="right" style="color:var(--muted)">3,57%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-comp">eletromidia.com.br</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--muted)">&lt; 10%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:9%;background:var(--muted);opacity:.5"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">12,37%</td>
+              <td class="right" style="color:var(--muted)">31,43%</td>
+              <td class="right" style="color:var(--muted)">72,09%</td>
+              <td class="right" style="color:var(--muted)">32,56%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PERÍODO 2 -->
+    <div class="auction-section fade-up">
+      <div class="auction-period-label" style="color:var(--green)">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--green);display:inline-block"></span>
+        16 a 29 mai. 2026 · Após o ajuste
+        <span class="delta-badge delta-up">↑ Melhorou</span>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="auction-table">
+          <thead>
+            <tr>
+              <th>Domínio</th>
+              <th class="right">Parcela de Impressões</th>
+              <th class="right">Taxa de Sobreposição</th>
+              <th class="right">Posição Superior</th>
+              <th class="right">Top da Página</th>
+              <th class="right">1ª Posição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="us-row">
+              <td><span class="domain-badge domain-us">🏆 THE LED (Você)</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--green);font-family:'Open Sans',sans-serif;font-weight:800">77,31%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:77.31%;background:var(--green)"></span></span>
+                  <span class="delta-badge delta-up">+14,84 p.p.</span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">—</td>
+              <td class="right" style="color:var(--muted)">—</td>
+              <td class="right" style="color:var(--text)">90,22%</td>
+              <td class="right" style="color:var(--text)">87,23%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-comp">dshow.com.br</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--muted)">&lt; 10%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:9%;background:var(--muted);opacity:.5"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">7,34%</td>
+              <td class="right" style="color:var(--muted)">3,70%</td>
+              <td class="right" style="color:var(--muted)">68,97%</td>
+              <td class="right" style="color:var(--muted)">3,45%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-comp">eletromidia.com.br</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--muted)">&lt; 10%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:9%;background:var(--muted);opacity:.5"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">6,52%</td>
+              <td class="right" style="color:var(--muted)">8,33%</td>
+              <td class="right" style="color:var(--muted)">95,83%</td>
+              <td class="right" style="color:var(--muted)">8,33%</td>
+            </tr>
+            <tr>
+              <td><span class="domain-badge domain-alert">ledwave.com.br ⚠️</span></td>
+              <td class="right">
+                <div class="is-pill">
+                  <span style="color:var(--orange)">&lt; 10%</span>
+                  <span class="is-mini-bar-wrap"><span class="is-mini-bar" style="width:9%;background:var(--orange);opacity:.6"></span></span>
+                </div>
+              </td>
+              <td class="right" style="color:var(--muted)">11,68%</td>
+              <td class="right" style="color:var(--muted)">0,00%</td>
+              <td class="right" style="color:var(--muted)">68,89%</td>
+              <td class="right" style="color:var(--muted)">0,00%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Insight box -->
+    <div class="card fade-up" style="border-left:3px solid var(--green);background:rgba(62,207,142,.04)">
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="font-size:22px;flex-shrink:0">📊</div>
+        <div>
+          <div style="font-family:'Open Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:8px">Leitura dos dados</div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8;margin:0">
+            Os concorrentes que aparecem no leilão de marca da THE LED <strong style="color:var(--text)">não chegam a 10% de Parcela de Impressões</strong> — muito abaixo do nosso resultado, que saiu de <strong style="color:var(--text)">62%</strong> e foi para <strong style="color:var(--green)">77%</strong> entre as duas quinzenas. Isso significa que a THE LED aparece em mais de <strong style="color:var(--green)">7 de cada 10 buscas pela própria marca</strong>, enquanto os concorrentes disputam as migalhas do leilão.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEÇÃO 3 — LEDWAVE ═══ -->
+<section id="ledwave">
+  <div class="container">
+    <div class="section-label fade-up" style="color:var(--orange)">
+      <span class="bar" style="background:var(--orange)"></span>
+      Caso específico
+    </div>
+    <h2 class="fade-up">A LedWave e o jogo duplo</h2>
+    <p class="section-desc fade-up">
+      Um concorrente que aparece de forma irrisória nos nossos leilões de marca, mas adota uma postura de confronto que não condiz com sua performance.
+    </p>
+
+    <div class="ledwave-alert fade-up">
+      <div class="al-eyebrow">⚠️ Atenção · LedWave · ledwave.com.br</div>
+      <h3>Presença irrelevante, comportamento contraditório</h3>
+      <p>
+        Os dados do leilão deixam claro o cenário: a LedWave aparece comprando os termos de marca da THE LED no Google Ads, porém com uma <strong style="color:var(--text)">Parcela de Impressões que não ultrapassa 11,48%</strong> no melhor momento — e caindo para menos de 10% na segunda quinzena. Na prática, a presença deles no nosso leilão de marca é irrisória e <strong style="color:var(--text)">não representa nenhuma ameaça real à visibilidade da THE LED.</strong>
+      </p>
+      <p>
+        O que chama atenção não é a performance deles, mas o <strong style="color:var(--text)">comportamento contraditório</strong>: ao mesmo tempo em que compram os termos de marca da THE LED, a LedWave recorre a empresas como a Branddi para pressionar a THE LED a encerrar a compra dos termos deles. Ou seja, <strong style="color:var(--text)">terceirizam a cobrança de algo que eles mesmos praticam</strong> — e ainda saem perdendo nos dois leilões.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEÇÃO 4 — EVOLUÇÃO ═══ -->
+<section id="evolucao" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-label fade-up" style="color:var(--purple)">
+      <span class="bar" style="background:var(--purple)"></span>
+      O que fizemos
+    </div>
+    <h2 class="fade-up">A ação que gerou o resultado</h2>
+    <p class="section-desc fade-up">Nenhuma empresa terceira foi necessária. O ajuste foi feito internamente pela Braper na gestão das campanhas.</p>
+
+    <div class="timeline fade-up">
+      <div class="tl-item">
+        <div class="tl-line">
+          <div class="tl-dot" style="background:var(--orange)"></div>
+          <div class="tl-connector"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date" style="color:var(--orange)">01–15 Mai · Diagnóstico</div>
+          <div class="tl-title">Campanha com foco disperso — IS em ~62%</div>
+          <div class="tl-body">A campanha Institucional estava com orçamento dividido entre termos de marca e termos genéricos, o que diluía a participação nos leilões de alta intenção. A Parcela de Impressões ficou em 62,47% no grupo Institucional e abaixo de 66% no Remarketing Site.</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-line">
+          <div class="tl-dot" style="background:var(--yellow)"></div>
+          <div class="tl-connector"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date" style="color:var(--yellow)">Meados de Mai · Ação da Braper</div>
+          <div class="tl-title">Foco total nos termos de marca</div>
+          <div class="tl-body">O Gabriel pausou todos os termos que não eram de marca exata, concentrando o orçamento exclusivamente nos leilões relevantes de alta intenção relacionados à THE LED.</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-line">
+          <div class="tl-dot" style="background:var(--green)"></div>
+          <div class="tl-connector"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-date" style="color:var(--green)">16–29 Mai · Resultado</div>
+          <div class="tl-title">IS salta para 77–80% — concorrentes ficam para trás</div>
+          <div class="tl-body">Em menos de duas semanas, a Parcela de Impressões no leilão de marca foi de <strong style="color:var(--text)">62% para 77%</strong> (Institucional geral) e chegou a <strong style="color:var(--green)">80%</strong> no grupo Institucional e <strong style="color:var(--green)">78%</strong> no Remarketing. Taxa de 1ª posição subiu para <strong style="color:var(--text)">87,23%</strong>. Tudo isso sem contratar ninguém.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEÇÃO 5 — CONCLUSÃO ═══ -->
+<section id="resposta">
+  <div class="container">
+    <div class="section-label fade-up" style="color:var(--indigo)">
+      <span class="bar" style="background:var(--indigo)"></span>
+      Conclusão
+    </div>
+    <h2 class="fade-up">Não precisamos de terceiros</h2>
+    <p class="section-desc fade-up">Nossa resposta ao diagnóstico da Branddi — com dados reais, do próprio Google Ads.</p>
+
+    <div class="verdict fade-up">
+      <div class="verdict-icon">🏆</div>
+      <div class="verdict-title">Marca protegida. Leilão vencido.</div>
+      <div class="verdict-body">
+        Os dados mostram que a THE LED domina o próprio leilão de marca com <strong style="color:var(--text)">mais de 77% de Parcela de Impressões</strong> — enquanto todos os concorrentes juntos não passam de 10% individualmente. O ajuste foi feito internamente pela Braper, sem nenhum custo adicional, e o resultado apareceu em menos de duas semanas.
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="answer-box fade-up">
+      <div style="font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--indigo);margin-bottom:16px">📋 Resposta sugerida ao Richard</div>
+      <p>
+        A Branddi enviou um diagnóstico mostrando que há concorrentes comprando palavras-chave relacionadas à THE LED no Google Ads. <strong>Isso é normal, legal e acontece com todas as marcas relevantes do mercado.</strong> O modelo de prospecção da Branddi é justamente esse: coletar dados públicos, apresentá-los de forma alarmante e oferecer o serviço deles como solução — sem relevância real de mercado nessa área.
+      </p>
+      <p>
+        O que importa é: <strong>estamos ganhando o leilão?</strong> Sim. O Gabriel ajustou a campanha Institucional com foco total nos termos de marca, e a Parcela de Impressões subiu de <strong>~62% para 77–80%</strong> em duas semanas. Os concorrentes aparecem com menos de 10% individualmente — a THE LED está consistentemente na 1ª posição em mais de <strong>87% das buscas</strong> pela própria marca.
+      </p>
+      <p>
+        Sobre a LedWave especificamente: os dados mostram que a presença deles no nosso leilão de marca <strong>não ultrapassa 11,48% de Parcela de Impressões</strong> — caindo para menos de 10% na segunda quinzena. É uma presença irrisória que não representa ameaça real. O que chama atenção é o comportamento contraditório: <strong>ao mesmo tempo em que compram nossos termos, recorrem a empresas como a Branddi para nos pressionar a parar de comprar os termos deles</strong> — terceirizando a cobrança de algo que eles mesmos praticam, e ainda saindo perdendo nos dois leilões.
+      </p>
+      <p>
+        <strong>Não precisamos contratar nenhuma empresa terceira para isso.</strong> Esse trabalho já está sendo feito dentro da gestão de mídia da Braper, com dados e resultado comprovados.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span style="font-weight:300">THE </span>LED</div>
+  <div class="footer-by" style="margin-top:6px">Análise preparada por <strong style="color:var(--text)">Braper Performance</strong></div>
+  <div class="footer-by" style="margin-top:4px">Maio 2026 · Dados: Google Ads — Campanha Institucional</div>
+  <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <span class="chip chip-green">IS 77–80% ↑</span>
+    <span class="chip chip-purple">Gestão Interna · Braper</span>
+    <span class="chip chip-red">Branddi · Não obrigatório</span>
+  </div>
+</footer>
+
+<script>
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        e.target.style.transitionDelay = (i % 4) * 80 + 'ms';
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  fadeEls.forEach(el => io.observe(el));
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => spy.observe(s));
+</script>
+</body>
+</html>
