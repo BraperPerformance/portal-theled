@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE LED · Central do Cliente</title>
+<link rel="icon" type="image/png" href="assets/logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0D;
+  --surface:#121217;
+  --surface-2:#17171E;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.16);
+  --text:#FFFFFF;
+  --muted:rgba(255,255,255,.56);
+  --faint:rgba(255,255,255,.34);
+  --amarelo:#E4D33E;
+  --laranja:#EB6C42;
+  --rosa:#E73968;
+  --roxo:#954B9D;
+  --azul:#5756A0;
+  --grad-full:linear-gradient(-45deg,var(--azul),var(--roxo),var(--rosa),var(--laranja),var(--amarelo));
+  --radius:16px;
+  --topbar-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Poppins',system-ui,sans-serif;
+  font-weight:400;
+  letter-spacing:.01em;
+  line-height:1.65;
+  min-height:100vh;
+}
+::selection{background:var(--rosa);color:#fff}
+a{color:inherit}
+button{font-family:inherit}
+img{display:block}
+
+/* ---------- Login ---------- */
+.view{display:none}
+.view.active{display:block}
+#view-login{
+  min-height:100vh;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:24px;
+  position:relative;overflow:hidden;
+}
+#view-login.active{display:flex}
+#view-login::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(600px 400px at 85% 10%, rgba(149,75,157,.14), transparent 70%),
+    radial-gradient(700px 500px at 10% 90%, rgba(235,108,66,.10), transparent 70%);
+  pointer-events:none;
+}
+.login-card{
+  width:100%;max-width:440px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:46px 40px 38px;
+  position:relative;z-index:1;
+}
+.login-card::before{
+  content:"";position:absolute;top:0;left:40px;right:40px;height:2px;
+  background:var(--grad-full);border-radius:0 0 2px 2px;
+}
+.login-logo{display:flex;flex-direction:column;align-items:center;gap:18px;margin-bottom:34px}
+.login-logo img{width:200px;height:auto}
+.login-title{text-align:center;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:26px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input,.field select{
+  width:100%;padding:13px 16px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:10px;
+  color:var(--text);
+  font-family:inherit;font-size:.95rem;letter-spacing:.02em;
+  transition:border-color .2s;
+  appearance:none;-webkit-appearance:none;
+}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;
+  cursor:pointer;
+}
+.field select:invalid{color:var(--faint)}
+.field select option{background:var(--surface);color:var(--text)}
+.field select optgroup{background:var(--surface);color:var(--faint);font-style:normal}
+.field input:focus,.field select:focus{outline:none;border-color:var(--rosa)}
+.btn-primary{
+  width:100%;padding:14px;
+  border:none;border-radius:10px;
+  background:var(--grad-full);
+  background-size:200% 200%;background-position:70% 50%;
+  color:#fff;font-weight:600;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;
+  transition:background-position .5s, transform .15s;
+  margin-top:8px;
+}
+.btn-primary:hover{background-position:30% 50%}
+.btn-primary:active{transform:scale(.985)}
+.btn-primary:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.login-error{
+  display:none;
+  margin-top:14px;padding:11px 14px;
+  border:1px solid rgba(231,57,104,.4);border-radius:10px;
+  background:rgba(231,57,104,.08);
+  color:#F1A5BC;
+  font-size:.82rem;text-align:center;
+}
+.login-error.show{display:block}
+.login-foot{margin-top:26px;text-align:center;font-size:.7rem;letter-spacing:.14em;color:var(--faint)}
+
+/* ---------- App shell ---------- */
+#app{display:none;min-height:100vh}
+#app.active{display:block}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:20px;
+  height:var(--topbar-h);
+  padding:0 32px;
+  background:rgba(10,10,13,.88);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
+.brand img{height:22px;width:auto}
+.topnav{display:flex;align-items:center;gap:6px;margin-left:14px}
+.topnav a{
+  text-decoration:none;color:var(--muted);
+  font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+  padding:8px 14px;border-radius:999px;
+  transition:color .2s, background .2s;
+}
+.topnav a:hover{color:var(--text)}
+.topnav a.on{color:var(--text);background:rgba(255,255,255,.06)}
+.topbar .grad-hair{position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--grad-full);opacity:.5}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+.btn-home{
+  display:none;
+  align-items:center;gap:9px;
+  padding:9px 18px 9px 14px;
+  border:1px solid var(--line-strong);border-radius:999px;
+  background:transparent;color:var(--text);
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+  cursor:pointer;text-decoration:none;
+  transition:border-color .2s, background .2s;
+}
+.btn-home.show{display:inline-flex}
+.btn-home:hover{border-color:var(--rosa);background:rgba(231,57,104,.07)}
+.btn-home svg{width:15px;height:15px}
+.user-chip{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 14px 7px 8px;
+  border:1px solid var(--line);border-radius:999px;
+  font-size:.78rem;color:var(--muted);
+}
+.user-chip .avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--grad-full);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:800;color:#fff;
+}
+.user-chip .badge{
+  font-size:.56rem;font-weight:800;letter-spacing:.14em;
+  padding:3px 8px;border-radius:999px;
+  background:var(--grad-full);color:#fff;
+  display:none;
+}
+.user-chip .badge.show{display:inline-block}
+.btn-exit{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:9px 16px;border:none;border-radius:999px;
+  background:transparent;color:var(--muted);
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+  cursor:pointer;transition:color .2s;
+}
+.btn-exit:hover{color:var(--rosa)}
+.btn-exit svg{width:15px;height:15px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+
+/* ---------- Home ---------- */
+.hero{padding:72px 0 48px;text-align:center}
+.hero .eyebrow{
+  display:inline-block;
+  padding:7px 18px;
+  border:1px solid var(--line-strong);border-radius:999px;
+  font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:26px;
+}
+.hero h1{font-size:clamp(2rem,4.6vw,3.1rem);font-weight:300;letter-spacing:.02em;line-height:1.2}
+.hero h1 b{font-weight:800;background:var(--grad-full);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:560px;margin:18px auto 0;color:var(--muted);font-size:.95rem}
+
+.cat-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:18px;padding-bottom:80px;
+  max-width:840px;margin:0 auto;
+}
+.cat-card{
+  position:relative;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:32px 30px 28px;
+  cursor:pointer;text-align:left;color:var(--text);
+  transition:transform .22s, border-color .22s, background .22s;
+  overflow:hidden;
+}
+.cat-card::before{
+  content:"";position:absolute;top:0;left:0;bottom:0;width:3px;
+  background:var(--cat-grad,var(--grad-full));
+  opacity:.9;
+}
+.cat-card:hover{transform:translateY(-4px);border-color:var(--line-strong);background:var(--surface-2)}
+.cat-card:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+.cat-card .cat-tela{
+  width:30px;height:44px;border-radius:3px;
+  background:var(--cat-grad,var(--grad-full));
+  margin-bottom:22px;
+}
+.cat-card h3{font-size:1.16rem;font-weight:600;letter-spacing:.02em;margin-bottom:8px}
+.cat-card p{font-size:.84rem;color:var(--muted);line-height:1.6;margin-bottom:22px}
+.cat-card .cat-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);
+}
+.cat-card .cat-open{display:inline-flex;align-items:center;gap:7px;font-weight:600;color:var(--text)}
+.cat-card .cat-open svg{width:13px;height:13px;transition:transform .2s}
+.cat-card:hover .cat-open svg{transform:translateX(4px)}
+
+/* ---------- Category view ---------- */
+.cat-head{padding:64px 0 36px;border-bottom:1px solid var(--line);margin-bottom:40px;position:relative}
+.cat-head .cat-tela{width:36px;height:54px;border-radius:3px;background:var(--cat-grad,var(--grad-full));margin-bottom:24px}
+.cat-head .eyebrow{font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:10px}
+.cat-head h2{font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:300;letter-spacing:.02em}
+.cat-head h2 b{font-weight:800}
+.cat-head p{max-width:640px;color:var(--muted);font-size:.92rem;margin-top:12px}
+
+.doc-section{margin-bottom:56px}
+.doc-section > .sec-label{
+  display:flex;align-items:center;gap:14px;
+  font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:20px;
+}
+.doc-section > .sec-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.doc-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:26px 24px 22px;
+  display:flex;flex-direction:column;
+  text-align:left;color:var(--text);cursor:pointer;
+  transition:transform .2s,border-color .2s;
+}
+.doc-card:hover{transform:translateY(-3px);border-color:var(--line-strong)}
+.doc-card:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+.doc-tag{
+  align-self:flex-start;
+  padding:5px 12px;border-radius:999px;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;
+  background:rgba(255,255,255,.06);color:var(--muted);
+  border:1px solid var(--line);
+  margin-bottom:16px;
+}
+.doc-card h4{font-size:1rem;font-weight:600;letter-spacing:.01em;line-height:1.4;margin-bottom:8px}
+.doc-card p{font-size:.82rem;color:var(--muted);line-height:1.6;flex:1;margin-bottom:20px}
+.doc-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  color:var(--text);
+  transition:color .2s;
+}
+.doc-link svg{width:13px;height:13px;transition:transform .2s}
+.doc-card:hover .doc-link{color:var(--laranja)}
+.doc-card:hover .doc-link svg{transform:translateX(4px)}
+.empty{
+  border:1px dashed var(--line-strong);border-radius:var(--radius);
+  padding:56px 32px;text-align:center;color:var(--muted);font-size:.9rem;
+}
+.empty b{color:var(--text);font-weight:600;display:block;margin-bottom:6px;font-size:1rem}
+
+/* ---------- Visualizador de documento ---------- */
+body.viewing .foot{display:none}
+.doc-bar{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 32px;
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+}
+.doc-bar .db-cat{
+  font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);
+  padding:5px 12px;border:1px solid var(--line);border-radius:999px;flex-shrink:0;
+}
+.doc-bar .db-title{
+  font-size:.86rem;font-weight:500;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.doc-frame-wrap{height:calc(100vh - var(--topbar-h) - 55px);background:var(--bg)}
+.doc-frame-wrap iframe{width:100%;height:100%;border:0;display:block;background:var(--bg)}
+
+/* ---------- Guia ---------- */
+.guia-body{max-width:760px;padding-bottom:90px}
+.guia-block{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:30px 32px;margin-bottom:16px;
+}
+.guia-block h4{display:flex;align-items:center;gap:14px;font-size:1rem;font-weight:600;margin-bottom:10px}
+.guia-block h4 .dot{width:9px;height:22px;border-radius:2px;flex-shrink:0}
+.guia-block p{font-size:.88rem;color:var(--muted)}
+.guia-block p + p{margin-top:10px}
+.guia-block code{
+  background:rgba(255,255,255,.07);border:1px solid var(--line);
+  border-radius:6px;padding:2px 8px;font-size:.82rem;color:var(--text);
+  font-family:ui-monospace,monospace;letter-spacing:0;
+}
+.btn-whats{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:16px;padding:13px 24px;
+  border-radius:999px;border:none;text-decoration:none;
+  background:var(--grad-full);background-size:200% 200%;background-position:70% 50%;
+  color:#fff;font-weight:600;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+  transition:background-position .5s, transform .15s;
+}
+.btn-whats:hover{background-position:30% 50%}
+.btn-whats:active{transform:scale(.985)}
+.btn-whats svg{width:17px;height:17px}
+
+/* ---------- Footer ---------- */
+.foot{
+  border-top:1px solid var(--line);
+  padding:26px 32px;margin-top:20px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:.72rem;letter-spacing:.14em;color:var(--faint);
+}
+.foot .f-left{display:inline-flex;align-items:center;gap:12px}
+.foot img{height:14px;width:auto;opacity:.85}
+
+/* ---------- Motion / responsive ---------- */
+.fade-in{animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media (max-width:760px){
+  .topnav{display:none}
+}
+@media (max-width:640px){
+  .topbar{padding:0 16px;gap:10px}
+  .wrap{padding:0 18px}
+  .user-chip{display:none}
+  .btn-home .lbl{display:none}
+  .btn-home{padding:9px 12px}
+  .hero{padding:52px 0 36px}
+  .login-card{padding:40px 26px 32px}
+  .doc-bar{padding:10px 16px}
+  .doc-bar .db-cat{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<section id="view-login" class="active">
+  <div class="login-card fade-in">
+    <div class="login-logo">
+      <img src="assets/logo-vertical.png" alt="THE LED — Infinitas Possibilidades">
+    </div>
+    <div class="login-title">Central do Cliente</div>
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="in-user">Usuário</label>
+        <input id="in-user" type="text" autocomplete="name" placeholder="Nome e Sobrenome" required>
+      </div>
+      <div class="field">
+        <label for="in-pass">Senha de acesso</label>
+        <input id="in-pass" type="password" autocomplete="current-password" placeholder="••••••••••" required>
+      </div>
+      <button class="btn-primary" type="submit">Entrar na Central</button>
+      <div class="login-error" id="login-error">Acesso inválido. Confira o usuário e a senha enviados pela equipe Braper.</div>
+    </form>
+    <div class="login-foot">BRAPER × THE LED · 2026</div>
+  </div>
+</section>
+
+<!-- ===================== APP ===================== -->
+<div id="app">
+  <header class="topbar">
+    <a class="brand" href="#/portal" aria-label="Ir para o portal">
+      <img src="assets/logo-horizontal.png" alt="THE LED">
+    </a>
+    <nav class="topnav" aria-label="Navegação">
+      <a href="#/portal" data-nav="portal">Início</a>
+      <a href="#/cat/planejamento" data-nav="planejamento">Planejamento</a>
+      <a href="#/cat/relatorios" data-nav="relatorios">Relatórios</a>
+      <a href="#/guia" data-nav="guia">Guia da Central</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn-home" id="btn-home" href="#/portal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <span class="lbl" id="btn-home-lbl">Voltar</span>
+      </a>
+      <div class="user-chip">
+        <span class="avatar" id="chip-avatar">·</span>
+        <span class="uname" id="chip-name">—</span>
+        <span class="badge" id="chip-badge">ADMIN</span>
+      </div>
+      <button class="btn-exit" id="btn-exit" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Sair
+      </button>
+    </div>
+    <div class="grad-hair" aria-hidden="true"></div>
+  </header>
+
+  <main id="main"></main>
+
+  <footer class="foot">
+    <span class="f-left"><img src="assets/logo-icon.png" alt="" aria-hidden="true">CENTRAL DO CLIENTE · THE LED</span>
+    <span>GESTÃO BRAPER · MÍDIA PAGA & ESTRATÉGIA</span>
+  </footer>
+</div>
+
+<script>
+/* =========================================================
+   USUÁRIOS AUTORIZADOS
+   ========================================================= */
+const USERS = {
+  "Richard Albanesi":  { grupo:"cliente" },
+  "Bianca Saad":       { grupo:"cliente" },
+  "Raphael Ricciardi": { grupo:"cliente" },
+  "Thaís Correia":     { grupo:"cliente" },
+  "Fernando Guerra":   { grupo:"cliente" },
+  "Rafael Moraes":     { grupo:"admin"   },
+  "Gabriel Martins":   { grupo:"admin"   }
+};
+const SENHAS = { cliente:"theled2026#", admin:"braper#711#" };
+
+/* =========================================================
+   CATEGORIAS E DOCUMENTOS
+   Para publicar um novo material: adicione um objeto no array
+   da categoria/seção correta com { id, titulo, tag, desc, arquivo }.
+   - "id" é único e usado na URL interna do visualizador.
+   - "arquivo" é o caminho do HTML dentro de docs/.
+   ========================================================= */
+const CATS = [
+  {
+    id:"planejamento", nome:"Planejamento", label:"PLANEJAMENTO",
+    grad:"linear-gradient(-45deg, var(--laranja), var(--amarelo))",
+    desc:"Estratégias, propostas e planos que orientam a operação de mídia paga e as novas frentes de aquisição da THE LED.",
+    intro:"Aqui ficam os materiais estratégicos: propostas de canal, planos de mídia e direcionamentos que guiam a evolução da operação."
+  },
+  {
+    id:"relatorios", nome:"Relatórios", label:"RELATÓRIOS",
+    grad:"linear-gradient(-45deg, var(--rosa), var(--laranja))",
+    desc:"Estudos analíticos de resultado e os acompanhamentos semanais de performance das campanhas.",
+    intro:"Leituras de resultado da operação — dos estudos analíticos de pipeline e marca aos acompanhamentos semanais de performance."
+  }
+];
+
+const DOCS = {
+  planejamento:[
+    { id:"plan-linkedin-ads",
+      titulo:"Plano de Mídia · LinkedIn Ads 2026", tag:"Novo canal",
+      desc:"Estratégia de aquisição de contas enterprise: proposta do LinkedIn Ads como nova camada de mídia, mantendo o investimento total estável.",
+      arquivo:"docs/the-led_plan_202607_plano-midia-linkedin-ads.html" },
+    { id:"plan-ticket-alto",
+      titulo:"Mídia Paga e Ticket Alto · 2026 YTD", tag:"Planejamento",
+      desc:"Como a mídia paga participa da geração de oportunidades de alto ticket no acumulado de 2026, com base nos dados do CRM.",
+      arquivo:"docs/the-led_plan_202607_midia-paga-ticket-alto.html" }
+  ],
+  estudos:[
+    { id:"rep-analise-midia",
+      titulo:"Análise de Mídia Paga · Jan–Jun 2026", tag:"Análise",
+      desc:"Leitura analítica do primeiro semestre: investimento, impacto e oportunidade nos canais de mídia paga.",
+      arquivo:"docs/the-led_report_202607_analise-midia-paga_v2.html" },
+    { id:"rep-oportunidades",
+      titulo:"Estudo de Performance das Oportunidades · 2026", tag:"Estudo",
+      desc:"Mídia paga e a conta de ticket alto: como as oportunidades geradas pelos canais evoluem na base do CRM.",
+      arquivo:"docs/the-led_report_202607_estudo-performance-oportunidades.html" },
+    { id:"rep-marca-leilao",
+      titulo:"Proteção de Marca · Maio 2026", tag:"Marca",
+      desc:"Análise do leilão de marca: como o termo THE LED está sendo disputado nos buscadores e a leitura de proteção da marca.",
+      arquivo:"docs/the-led_report_202605_marca-leilao.html" }
+  ],
+  status:[
+    { id:"status-2026-05-29",
+      titulo:"Status Semanal · 29/05/2026", tag:"Performance",
+      desc:"Acompanhamento semanal de performance das campanhas: resultados, leitura do especialista e próximos passos.",
+      arquivo:"docs/the-led_report_202605_performance-semanal-20260529.html" }
+    /* Novo status: adicione uma linha acima seguindo o mesmo formato:
+       { id:"status-2026-06-05", titulo:"Status Semanal · 05/06/2026", tag:"Performance", desc:"...", arquivo:"docs/....html" } */
+  ]
+};
+
+/* índice de documentos por id (para o visualizador) */
+const DOC_INDEX = {};
+DOCS.planejamento.forEach(d=>DOC_INDEX[d.id]={...d,catId:"planejamento",catNome:"Planejamento"});
+DOCS.estudos.forEach(d=>DOC_INDEX[d.id]={...d,catId:"relatorios",catNome:"Relatórios · Estudos"});
+DOCS.status.forEach(d=>DOC_INDEX[d.id]={...d,catId:"relatorios",catNome:"Relatórios · Status Semanal"});
+
+/* ===================== Estado ===================== */
+let session = { nome:null, grupo:null }; // sessão em memória — sair encerra o acesso
+
+const $ = s => document.querySelector(s);
+const viewLogin = $("#view-login");
+const app = $("#app");
+const main = $("#main");
+const btnHome = $("#btn-home");
+const btnHomeLbl = $("#btn-home-lbl");
+
+/* ===================== Login ===================== */
+/* normaliza nome digitado: minúsculas, sem acentos, espaços únicos */
+function normalizaNome(s){
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim();
+}
+const USERS_NORM = {};
+Object.keys(USERS).forEach(n=>USERS_NORM[normalizaNome(n)] = n);
+
+$("#login-form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const digitado = $("#in-user").value;
+  const canonico = USERS_NORM[normalizaNome(digitado)];
+  const user = canonico ? USERS[canonico] : null;
+  const pass = $("#in-pass").value;
+  if(!user || pass !== SENHAS[user.grupo]){
+    $("#login-error").classList.add("show");
+    $("#in-pass").value = "";
+    $("#in-pass").focus();
+    return;
+  }
+  $("#login-error").classList.remove("show");
+  const nome = canonico;
+  session = { nome, grupo:user.grupo };
+  $("#chip-name").textContent = nome.split(" ")[0];
+  $("#chip-avatar").textContent = nome.charAt(0).toUpperCase();
+  $("#chip-badge").classList.toggle("show", user.grupo==="admin");
+  viewLogin.classList.remove("active");
+  app.classList.add("active");
+  location.hash = "#/portal";
+  render();
+});
+
+$("#btn-exit").addEventListener("click", ()=>{
+  session = { nome:null, grupo:null };
+  app.classList.remove("active");
+  document.body.classList.remove("viewing");
+  viewLogin.classList.add("active");
+  $("#in-user").value = ""; $("#in-pass").value = "";
+  location.hash = "";
+  window.scrollTo(0,0);
+});
+
+/* ===================== Router ===================== */
+window.addEventListener("hashchange", render);
+
+function setNav(active){
+  document.querySelectorAll(".topnav a").forEach(a=>{
+    a.classList.toggle("on", a.dataset.nav===active);
+  });
+}
+
+function render(){
+  if(!session.nome) return;
+  const h = location.hash || "#/portal";
+  const catMatch = h.match(/^#\/cat\/(\w+)/);
+  const docMatch = h.match(/^#\/doc\/([\w-]+)/);
+  window.scrollTo(0,0);
+  document.body.classList.remove("viewing");
+
+  if(docMatch && DOC_INDEX[docMatch[1]]){
+    const d = DOC_INDEX[docMatch[1]];
+    document.body.classList.add("viewing");
+    btnHome.classList.add("show");
+    btnHome.href = "#/cat/"+d.catId;
+    btnHomeLbl.textContent = "Voltar à Central";
+    setNav(d.catId);
+    main.innerHTML = tplViewer(d);
+    return;
+  }
+  if(catMatch){
+    const cat = CATS.find(c=>c.id===catMatch[1]);
+    if(!cat){ location.hash="#/portal"; return; }
+    btnHome.classList.add("show");
+    btnHome.href = "#/portal";
+    btnHomeLbl.textContent = "Voltar ao portal";
+    setNav(cat.id);
+    main.innerHTML = tplCategoria(cat);
+    return;
+  }
+  if(h.startsWith("#/guia")){
+    btnHome.classList.add("show");
+    btnHome.href = "#/portal";
+    btnHomeLbl.textContent = "Voltar ao portal";
+    setNav("guia");
+    main.innerHTML = tplGuia();
+    return;
+  }
+  btnHome.classList.remove("show");
+  setNav("portal");
+  main.innerHTML = tplPortal();
+}
+
+/* ===================== Templates ===================== */
+const arrowSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>';
+
+function tplPortal(){
+  const nome = session.nome.split(" ")[0];
+  const counts = {
+    planejamento: DOCS.planejamento.length,
+    relatorios: DOCS.estudos.length + DOCS.status.length
+  };
+  const cards = CATS.map((c,i)=>{
+    const n = counts[c.id];
+    const meta = n===1 ? "1 MATERIAL" : n+" MATERIAIS";
+    return `
+    <button class="cat-card fade-in" style="--cat-grad:${c.grad};animation-delay:${i*70}ms" onclick="location.hash='#/cat/${c.id}'">
+      <div class="cat-tela" aria-hidden="true"></div>
+      <h3>${c.nome}</h3>
+      <p>${c.desc}</p>
+      <div class="cat-meta"><span>${meta}</span><span class="cat-open">Abrir ${arrowSvg}</span></div>
+    </button>`;
+  }).join("");
+  return `
+  <div class="wrap">
+    <section class="hero fade-in">
+      <span class="eyebrow">THE LED · CENTRAL DO CLIENTE · 2026</span>
+      <h1>Olá, ${nome}. Bem-vindo à <b>Central do Cliente</b>.</h1>
+      <p>Os materiais de planejamento e os relatórios da operação de mídia da THE LED, organizados em um só lugar.</p>
+    </section>
+    <section class="cat-grid">${cards}</section>
+  </div>`;
+}
+
+function docCard(d, i){
+  return `
+  <button class="doc-card fade-in" style="animation-delay:${i*60}ms" onclick="location.hash='#/doc/${d.id}'">
+    <span class="doc-tag">${d.tag}</span>
+    <h4>${d.titulo}</h4>
+    <p>${d.desc}</p>
+    <span class="doc-link">Abrir documento ${arrowSvg}</span>
+  </button>`;
+}
+
+function tplCategoria(cat){
+  let sections = "";
+  if(cat.id==="relatorios"){
+    const estudos = DOCS.estudos.map(docCard).join("");
+    const status = DOCS.status.length
+      ? `<div class="doc-grid">${DOCS.status.map(docCard).join("")}</div>`
+      : `<div class="empty fade-in"><b>Nenhum status publicado ainda</b>Os relatórios semanais de performance das campanhas aparecem aqui assim que forem publicados.</div>`;
+    sections = `
+      <section class="doc-section"><div class="sec-label">Estudos</div><div class="doc-grid">${estudos}</div></section>
+      <section class="doc-section"><div class="sec-label">Status Semanal</div>${status}</section>`;
+  } else {
+    const docs = DOCS[cat.id]||[];
+    sections = docs.length
+      ? `<section class="doc-section"><div class="doc-grid">${docs.map(docCard).join("")}</div></section>`
+      : `<div class="empty fade-in" style="margin-bottom:80px"><b>Categoria pronta para receber materiais</b>Assim que os primeiros documentos desta frente forem publicados, eles aparecem aqui.</div>`;
+  }
+  return `
+  <div class="wrap">
+    <section class="cat-head fade-in" style="--cat-grad:${cat.grad}">
+      <div class="cat-tela" aria-hidden="true"></div>
+      <span class="eyebrow">CENTRAL DO CLIENTE · ${cat.label}</span>
+      <h2><b>${cat.nome}</b></h2>
+      <p>${cat.intro}</p>
+    </section>
+    ${sections}
+    <div style="height:40px"></div>
+  </div>`;
+}
+
+function tplViewer(d){
+  return `
+  <div class="doc-bar fade-in">
+    <span class="db-cat">${d.catNome}</span>
+    <span class="db-title">${d.titulo}</span>
+  </div>
+  <div class="doc-frame-wrap">
+    <iframe src="${d.arquivo}" title="${d.titulo}" onload="try{this.contentWindow.focus()}catch(e){}"></iframe>
+  </div>`;
+}
+
+function tplGuia(){
+  const bloco = (grad, titulo, corpo) => `
+    <div class="guia-block fade-in">
+      <h4><span class="dot" style="background:${grad}"></span>${titulo}</h4>
+      ${corpo}
+    </div>`;
+  const whatsSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+  return `
+  <div class="wrap">
+    <section class="cat-head fade-in" style="--cat-grad:var(--grad-full)">
+      <div class="cat-tela" aria-hidden="true"></div>
+      <span class="eyebrow">CENTRAL DO CLIENTE · GUIA</span>
+      <h2>Como funciona a <b>Central do Cliente</b></h2>
+      <p>Um só endereço para os materiais da parceria Braper × THE LED — sempre atualizado, sempre acessível.</p>
+    </section>
+    <div class="guia-body">
+      ${bloco("linear-gradient(-45deg,var(--laranja),var(--amarelo))","O que é a Central",
+        `<p>A Central do Cliente reúne os materiais da operação de mídia e estratégia da THE LED: os planejamentos que orientam a operação e os relatórios de resultado. Cada documento abre dentro da própria Central, no formato interativo em que foi produzido.</p>`)}
+      ${bloco("linear-gradient(-45deg,var(--rosa),var(--laranja))","Como navegar",
+        `<p>Na tela inicial, cada card representa uma categoria. Ao abrir um documento, ele é exibido dentro da Central — e o botão <code>← Voltar à Central</code>, no topo da página, retorna à lista de materiais a qualquer momento. O logo THE LED no canto superior esquerdo leva de volta ao início.</p>
+         <p>O menu do topo dá acesso direto a <code>Planejamento</code>, <code>Relatórios</code> e a este guia. Para encerrar o acesso, use o botão <code>Sair</code>.</p>`)}
+      ${bloco("linear-gradient(-45deg,var(--roxo),var(--rosa))","As categorias",
+        `<p><b style="color:var(--text)">Planejamento</b> — estratégias e planos de mídia que orientam a operação: novos canais, audiências e frentes de aquisição.</p>
+         <p><b style="color:var(--text)">Relatórios</b> — dividido em <b style="color:var(--text)">Estudos</b>, com as análises de resultado, marca e oportunidades, e <b style="color:var(--text)">Status Semanal</b>, com os acompanhamentos semanais de performance das campanhas.</p>`)}
+      ${bloco("linear-gradient(-45deg,var(--azul),var(--roxo))","Atualizações",
+        `<p>A Central é atualizada pela equipe Braper conforme novos materiais são finalizados. Os status semanais são publicados após cada reunião de acompanhamento de performance.</p>`)}
+      ${bloco("var(--grad-full)","Suporte",
+        `<p>Ficou com alguma dúvida sobre os materiais, precisa de um novo acesso ou quer solicitar um documento? Fale diretamente com a equipe Braper pelo WhatsApp.</p>
+         <a class="btn-whats" href="https://wa.me/5511995550735" target="_blank" rel="noopener">${whatsSvg} Falar com a Braper</a>
+         <p style="margin-top:14px;font-size:.78rem;color:var(--faint)">Este acesso é de uso exclusivo das equipes THE LED e Braper.</p>`)}
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>
